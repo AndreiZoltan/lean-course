@@ -9,7 +9,7 @@ set_option linter.all false
 
 # The real numbers in Lean
 
-Lean has a copy of of the real numbers. It's called `real`,
+Lean has a copy of of the real numbers. It's called `Real`,
 but we use the usual notation `ℝ`. Put your cursor on the `ℝ` to find
 out how to type it in VS Code.
 
@@ -42,7 +42,8 @@ example : (2 : ℝ) + 2 < 5 := by
   done
 
 example : ∃ x : ℝ, 3 * x + 7 = 12 := by
-  use 5/3
+  -- norm_num
+  use (5/3 : ℝ)
   norm_num
   done
 
