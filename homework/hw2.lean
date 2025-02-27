@@ -32,15 +32,55 @@ open Section2sheet5
 -/
 example (a : ℕ → ℝ) (t : ℝ) (h : TendsTo a t) (c : ℝ) (hc : 0 < c) :
     TendsTo (fun n ↦ c * a n) (c * t) := by
-  sorry
+    simp [TendsTo] at *
+    intros ε hε
+    specialize h (ε / c) (div_pos hε hc)
+    cases' h with N hN
+    use N
+    intro n hn
+    calc
+      _ =  |c * (a n - t)| := by ring_nf
+      _ = |c| * |a n - t| := abs_mul c (a n - t)
+      _ = c * |a n - t| := by rw [abs_of_pos hc]
+      _ < ε := by exact (lt_div_iff₀' hc).mp (hN n hn)
 
 /-- Задача 2.
 `x ∣ y` означает "`x` делит `y`". Тактика `norm_num` умеет доказывать делимость для числовых выражений.
 Подсказка: сократить доказательство поможет комбинатор `<;>`.
 -/
 example : ∀ (a b c : ℤ), ∃ m, (a = 1 ∨ a = 9) → (b = 3 ∨ b = 5) → (c = 42 ∨ c = 24) → m ∣ (a + b + c) := by
-  sorry
+  intro a b c
+  use 2
+  rintro (rfl | rfl) (rfl | rfl) (rfl | rfl) <;> norm_num
+
 
 /-- Задача 3 (сложная). -/
 example (a : ℕ → ℝ) (s t : ℝ) (hs : TendsTo a s) (ht : TendsTo a t) : s = t := by
-  sorry
+  simp [TendsTo] at *
+  have hst : ∀ ε > 0, ∃ N, ∀ n ≥ N, |a n - s| < ε/2 ∧ |a n - t| < ε/2 := by
+    intros ε hε
+    specialize hs (ε/2) (by linarith)
+    specialize ht (ε/2) (by linarith)
+    obtain ⟨Ns, hNs⟩ := hs
+    obtain ⟨Nt, hNt⟩ := ht
+    use max Ns Nt
+    intro n hn
+    constructor
+    exact (hNs n (le_of_max_le_left hn))
+    exact (hNt n (le_of_max_le_right hn))
+  have hst' : ∀ ε > 0, |s - t| < ε := by
+    intros ε hε
+    specialize hst ε hε
+    obtain ⟨N, hN⟩ := hst
+    specialize hN N (le_refl N)
+    calc
+      |s - t| = |(s - a N) + (a N - t)| := by ring_nf
+      _ ≤ |s - a N| + |a N - t| := abs_add _ _
+      _ = |- (a N - s)| + |a N - t| := by ring_nf
+      _ = |a N - s| + |a N - t| := by rw [abs_neg]
+      _ < ε/2 + ε/2 := by linarith
+      _ = ε := by norm_num
+  by_contra h
+  have h1: |s - t| > 0 := by exact abs_sub_pos.mpr h
+  specialize hst' (|s - t| / 2) (by linarith)
+  linarith
