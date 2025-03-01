@@ -125,12 +125,17 @@ example (p q : Prop) (h : p ∧ q) : q := by
 /-- If `a(n)` tends to `t` then `a(n) + c` tends to `t + c` -/
 theorem tendsTo_add_const {a : ℕ → ℝ} {t : ℝ} (c : ℝ) (h : TendsTo a t) :
     TendsTo (fun n ↦ a n + c) (t + c) := by
-  simp [TendsTo] at h ⊢
+  rw [TendsTo] at h ⊢
   intro ε hε
   specialize h ε hε
   -- cases' h with B hB
   obtain ⟨B, hB⟩ := h
   use B
+  intro n hn
+  specialize hB n hn
+  calc
+    |a n + c - (t + c)| = |a n - t| := by ring_nf
+    _ < ε := by assumption
 
 
 -- you're not quite ready for this one yet though.

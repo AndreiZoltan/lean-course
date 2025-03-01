@@ -51,7 +51,7 @@ example (x y : ℝ) : |x - y| = |y - x| := by exact abs_sub_comm x y
 -- Hmm. What would a theorem saying "the max is
 -- less-or-equal to something iff something else
 -- be called, according to Lean's naming conventions?"
-example (A B C : ℕ) : max A B ≤ C ↔ A ≤ C ∧ B ≤ C := by exact?
+example (A B C : ℕ) : max A B ≤ C ↔ A ≤ C ∧ B ≤ C := by exact Nat.max_le
 
 -- abs of something less than something...
 example (x y : ℝ) : |x| < y ↔ -y < x ∧ x < y := by exact abs_lt

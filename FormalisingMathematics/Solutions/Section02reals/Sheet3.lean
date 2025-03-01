@@ -120,9 +120,12 @@ example {a : ℕ → ℝ} {t : ℝ} (ha : TendsTo a t) : TendsTo (fun n => -a n)
 example {a : ℕ → ℝ} {t : ℝ} (ha : TendsTo a t) : TendsTo (fun n => -a n) (-t) := by
   rw [tendsTo_def] at ha ⊢
   peel ha with h ε hε B N hBN
-  convert h using 1
-  -- have h2 : ∀ x : ℝ, |-x| = |x| := by exact fun x => abs_neg x
-  convert abs_neg _ using 2
-  ring
+  -- convert h using 1
+  have h2 : ∀ x : ℝ, |-x| = |x| := by exact fun x => abs_neg x
+  ring_nf
+  calc
+    _ = |- (a B - t)| := by ring_nf
+    _ = |a B - t| := by rw [h2]
+  assumption
 
 end Section2sheet3solutions

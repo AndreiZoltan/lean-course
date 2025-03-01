@@ -78,8 +78,7 @@ example (a : ℕ → ℝ) (s t : ℝ) (hs : TendsTo a s) (ht : TendsTo a t) : s 
       _ ≤ |s - a N| + |a N - t| := abs_add _ _
       _ = |- (a N - s)| + |a N - t| := by ring_nf
       _ = |a N - s| + |a N - t| := by rw [abs_neg]
-      _ < ε/2 + ε/2 := by linarith
-      _ = ε := by norm_num
+      _ < ε := by linarith
   by_contra h
   have h1: |s - t| > 0 := by exact abs_sub_pos.mpr h
   specialize hst' (|s - t| / 2) (by linarith)
