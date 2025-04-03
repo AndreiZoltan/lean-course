@@ -62,7 +62,7 @@ example (a : G) : 1 * a = a :=
   one_mul a
 
 example (a : G) : a * a⁻¹ = 1 :=
-  mul_inv_self a
+  mul_inv_cancel a
 
 -- As well as the axioms, Lean has many other standard facts which are true
 -- in all groups. See if you can prove these from the axioms, or find them
