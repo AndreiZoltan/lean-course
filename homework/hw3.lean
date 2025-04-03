@@ -68,7 +68,41 @@ def IsLinear (f : ℚ → ℚ) : Prop := ∃ c, ∀ x, f x = c * x
 /-- Задача 3. -/
 example : {f : ℚ → ℚ | IsLinear f ∧ ∀ x, |f x| = |x|} = {id, -id} := by
   unfold IsLinear
-  ext x
+  ext f
   constructor
   intro h
-  
+  simp at h ⊢
+  cases' h with hl ha
+  rcases hl with ⟨c, hc⟩
+  have hc_norm : |c| = 1 := by
+    specialize ha 1
+    simp [hc] at ha
+    exact ha
+  have hc' : c = 1 ∨ c = -1 := by
+    exact abs_eq_abs.mp hc_norm
+  cases' hc' with cpos cneg
+  left
+  ext x
+  rw [hc, cpos]
+  norm_num
+  right
+  ext x
+  rw [hc, cneg]
+  norm_num
+  simp
+  intro h
+  cases' h with hpos hneg
+  use! 1
+  rw [hpos]
+  intro x
+  norm_num
+  intro x
+  rw [hpos]
+  norm_num
+  use! -1
+  intro x
+  rw [hneg]
+  norm_num
+  intro x
+  rw [hneg]
+  norm_num
