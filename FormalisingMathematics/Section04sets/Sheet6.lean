@@ -46,10 +46,17 @@ example : S ⊆ f ⁻¹' (f '' S) := by
   change ∃ a ∈ S, f a = f x
   use x
 
-example : f '' (f ⁻¹' T) ⊆ T := by sorry
+example : f '' (f ⁻¹' T) ⊆ T := by
+  rintro _ ⟨x, hx, rfl⟩
+  exact hx
 
 -- `library_search` will do this but see if you can do it yourself.
-example : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T := by sorry
+example : f '' S ⊆ T ↔ S ⊆ f ⁻¹' T := by
+  constructor
+  · intro h
+    exact Set.image_subset_iff.mp h
+  · intro h
+    exact Set.image_subset_iff.mpr h
 
 -- Pushforward and pullback along the identity map don't change anything
 -- pullback is not so hard
@@ -63,7 +70,9 @@ example : id '' S = S := by simp
 variable (Z : Type) (g : Y → Z) (U : Set Z)
 
 -- preimage of preimage is preimage of comp
-example : g ∘ f ⁻¹' U = f ⁻¹' (g ⁻¹' U) := by sorry
+example : g ∘ f ⁻¹' U = f ⁻¹' (g ⁻¹' U) := by
+  rfl
 
 -- preimage of preimage is preimage of comp
-example : g ∘ f '' S = g '' (f '' S) := by sorry
+example : g ∘ f '' S = g '' (f '' S) := by
+  exact Set.image_comp g f S

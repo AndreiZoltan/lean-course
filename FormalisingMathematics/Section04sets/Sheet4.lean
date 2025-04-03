@@ -76,4 +76,5 @@ example : ∀ x, x ∈ {r : ℝ | Real.IsEven r} := by
 
 -- likewise, the theory of positive negative real numbers is not interesting
 example : ∀ x, x ∉ {r : ℝ | 0 < r ∧ r < 0} := by
-  sorry
+  rintro x (hx : 0 < x ∧ x < 0)
+  linarith

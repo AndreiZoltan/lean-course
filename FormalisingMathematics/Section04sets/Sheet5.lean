@@ -38,8 +38,10 @@ variable (X : Type)
 example : A ∪ A = A := by
   ext a
   constructor
-  · sorry
-  · sorry
+  rintro (hA|hA) <;> exact hA
+  intro hA
+  left
+  exact hA
 
 example (f g : ℕ → ℕ) (h : ∀ x, f x = g x) : f = g := by
   ext n
@@ -47,20 +49,36 @@ example (f g : ℕ → ℕ) (h : ∀ x, f x = g x) : f = g := by
 
 -- #check propext
 
-example : A ∩ A = A := by sorry
+example : A ∩ A = A :=
+  inter_self A
 
-example : A ∩ ∅ = ∅ := by sorry
+example : A ∩ ∅ = ∅ := by
+  ext n
+  constructor
+  · rintro ⟨a1, a2⟩
+    exact a2
+  · intro a
+    exact False.elim a
 
-example : A ∪ univ = univ := by sorry
 
-example : A ⊆ B → B ⊆ A → A = B := by sorry
+example : A ∪ univ = univ := by
+  exact union_univ A
 
-example : A ∩ B = B ∩ A := by sorry
+example : A ⊆ B → B ⊆ A → A = B := by
+  intro a b
+  exact Subset.antisymm a b
 
-example : A ∩ (B ∩ C) = A ∩ B ∩ C := by sorry
+example : A ∩ B = B ∩ A := by
+  exact inter_comm A B
 
-example : A ∪ (B ∪ C) = A ∪ B ∪ C := by sorry
+example : A ∩ (B ∩ C) = A ∩ B ∩ C := by
+  exact Eq.symm (inter_assoc A B C)
 
-example : A ∪ B ∩ C = (A ∪ B) ∩ (A ∪ C) := by sorry
+example : A ∪ (B ∪ C) = A ∪ B ∪ C := by
+  exact Eq.symm (union_assoc A B C)
 
-example : A ∩ (B ∪ C) = A ∩ B ∪ A ∩ C := by sorry
+example : A ∪ B ∩ C = (A ∪ B) ∩ (A ∪ C) := by
+  exact union_inter_distrib_left A B C
+
+example : A ∩ (B ∪ C) = A ∩ B ∪ A ∩ C := by
+  exact inter_union_distrib_left A B C

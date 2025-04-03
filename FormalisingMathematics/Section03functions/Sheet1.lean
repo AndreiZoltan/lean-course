@@ -173,6 +173,15 @@ example : Injective (g ∘ f) ∧ ¬ Injective g := by
 
 -- This is another one
 example (f : X → Y) (g : Y → Z) : Surjective (g ∘ f) → Surjective g := by
-  sorry
+  intro hgf
+  -- say z in Z
+  intro z
+  -- by surjectivity of gf, there's x such that gf(x)=x
+  cases' hgf z with x hx
+  -- we need to prove there's y in Y with g y = z; use f(x)
+  use f x
+  -- goal is now exactly hx
+  exact hx
+
 
 end Section3sheet1

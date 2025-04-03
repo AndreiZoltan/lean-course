@@ -13,7 +13,57 @@ import Mathlib
 -/
 theorem problem1 (P Q R S : Prop) (h1 : P ∨ Q ↔ R ∨ S) (h2 : ¬ (P ∧ R)) (h3 : ¬ (Q ∧ S)) :
     (P ↔ S) ∧ (Q ↔ R) := by
-  sorry
+    constructor
+    constructor
+    intro h
+    cases' h1 with h4 h5
+    by_contra h6
+    apply h2
+    constructor
+    assumption
+
+    have pq : P ∨ Q := Or.inl h
+    have rs := h4 pq
+    cases' rs with r s
+    assumption
+    contradiction
+
+    intro h
+    cases' h1 with h4 h5
+    have rs : R ∨ S := Or.inr h
+    have pq : P ∨ Q := h5 rs
+    cases' pq with p q
+    assumption
+    have qs : Q ∧ S := ⟨q, h⟩
+    have c : False := h3 qs
+    exfalso
+    assumption
+
+    constructor
+    intro h
+    cases' h1 with h4 h5
+    have pq : P ∨ Q := Or.inr h
+    have rs := h4 pq
+    cases' rs with r s
+    assumption
+
+    have qs : Q ∧ S := ⟨h, s⟩
+    have f : False := h3 qs
+    exact False.elim f
+
+    intro h
+    cases' h1 with h4 h5
+    have rs : R ∨ S := Or.inl h
+    have pq := h5 rs
+    cases' pq with p q
+    have pr : P ∧ R := ⟨p, h⟩
+    have f : False := h2 pr
+    exact False.elim f
+
+    assumption
+
+
+
 
 /-- Задача 2. Кванторы.
 
@@ -30,7 +80,9 @@ theorem problem1 (P Q R S : Prop) (h1 : P ∨ Q ↔ R ∨ S) (h2 : ¬ (P ∧ R))
 * Может пригодиться тактика `field_simp`.
 -/
 theorem problem2 (f : ℚ → ℚ) (hf : ∀ x y, f (x + y) = f x + f y) : ∃ c, ∀ x, f x = c * x := by
-  sorry
+
+
+
 
 open Function in
 /-- Задача 3. Свойства функций и множества.

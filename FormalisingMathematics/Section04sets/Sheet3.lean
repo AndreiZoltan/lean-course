@@ -35,19 +35,39 @@ example : x ∉ A → x ∈ A → False := by
   change ¬ (x ∈ A) at hx
   exact hx hx'
 
-example : x ∈ A → x ∉ A → False := by sorry
+example : x ∈ A → x ∉ A → False := by
+  intro a b
+  trivial
 
-example : A ⊆ B → x ∉ B → x ∉ A := by sorry
+example : A ⊆ B → x ∉ B → x ∉ A := by
+  intro a b
+  by_contra ah
+  have k: x ∈ B := a ah
+  trivial
 
 -- Lean couldn't work out what I meant when I wrote `x ∈ ∅` so I had
 -- to give it a hint by telling it the type of `∅`.
-example : x ∉ (∅ : Set X) := by sorry
+example : x ∉ (∅ : Set X) := by
+  intro h
+  exact h
 
 example : x ∈ Aᶜ → x ∉ A := by
   intro hx
   change ¬ (x ∈ A) at hx
   exact hx
 
-example : (∀ x, x ∈ A) ↔ ¬∃ x, x ∈ Aᶜ := by sorry
+example : (∀ x, x ∈ A) ↔ ¬∃ x, x ∈ Aᶜ := by
+  constructor
+  · rintro h1 ⟨x, hx⟩
+    exact hx (h1 x)
+  · intro h x
+    by_contra h2
+    apply h
+    exact ⟨x, h2⟩
 
-example : (∃ x, x ∈ A) ↔ ¬∀ x, x ∈ Aᶜ := by sorry
+example : (∃ x, x ∈ A) ↔ ¬∀ x, x ∈ Aᶜ := by
+  constructor
+  · intro ⟨x, hx⟩ b
+    exact absurd hx (b x)
+  · intro a
+    aesop

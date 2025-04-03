@@ -55,6 +55,12 @@ example : x ∈ (∅ : Set X) → False := by
   change False at h
   exact h
 
-example : A ⊆ univ := by sorry
+example : A ⊆ univ := by
+  intro a ha
+  change True
+  trivial
 
-example : ∅ ⊆ A := by sorry
+example : ∅ ⊆ A := by
+  intro a ha
+  change False at ha
+  trivial

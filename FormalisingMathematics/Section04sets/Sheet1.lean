@@ -93,12 +93,47 @@ example : A ⊆ A ∪ B := by
   left
   exact ha
 
-example : A ∩ B ⊆ A := by sorry
+example : A ∩ B ⊆ A := by
+  rw [subset_def]
+  intro a ha
+  rw [mem_inter_iff] at ha
+  exact ha.left
 
-example : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := by sorry
+example : A ⊆ B → A ⊆ C → A ⊆ B ∩ C := by
+  intro a b
+  rw [subset_def]
+  intro c d
+  rw [mem_inter_iff]
+  constructor
+  · exact a d
+  · exact b d
 
-example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A := by sorry
+example : B ⊆ A → C ⊆ A → B ∪ C ⊆ A := by
+  intro b c
+  rw [subset_def]
+  intro k d
+  rw [mem_union_iff] at d
+  cases' d with dbh dch
+  · exact b dbh
+  · exact c dch
 
-example : A ⊆ B → C ⊆ D → A ∪ C ⊆ B ∪ D := by sorry
+example : A ⊆ B → C ⊆ D → A ∪ C ⊆ B ∪ D := by
+  -- intro hb hd
+  -- rw [subset_def] -- at hb hd ⊢
+  -- intro h ha
+  -- rw [mem_union_iff] at ha ⊢
+  intro hb hd h ha
+  rw [mem_union_iff] at ha
+  cases' ha with ha_b ha_c
+  · left
+    exact hb ha_b
+  · right
+    exact hd ha_c
 
-example : A ⊆ B → C ⊆ D → A ∩ C ⊆ B ∩ D := by sorry
+example : A ⊆ B → C ⊆ D → A ∩ C ⊆ B ∩ D := by
+  intro hb hd h ha
+  rw [mem_inter_iff] at ha ⊢
+  -- rw [subset_def] at hb hd
+  constructor
+  exact hb ha.left
+  exact hd ha.right

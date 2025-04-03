@@ -37,14 +37,38 @@ https://leanprover.github.io/theorem_proving_in_lean4/tactics.html
 Вам нужно справиться без нее, хотя тактика `tauto` не заперещена.
 -/
 example {X : Type} (A B C : Set X) (h : A ∪ B ⊆ C) : Cᶜ ⊆ Aᶜ ∩ Bᶜ := by
-  sorry
+  intro x hx
+  by_contra hc
+  change ¬ (x ∈ C) at hx
+  rw [← Set.compl_union] at hc
+  rw [← Set.compl_subset_compl] at h
+  exact hc (h hx)
 
 /-- Задача 2. -/
 example : ∃ f : ℕ → ℕ × ℕ, f '' {n | Even n} = {(n, m) | n = m} := by
-  sorry
+  let f : ℕ → ℕ × ℕ := λ n ↦ (n / 2, n / 2)
+  use f
+  ext ⟨a, b⟩
+  constructor
+  simp [Prod.ext_iff]
+  intro n hn ha hb
+  rw [← ha, ← hb]
+  intro hab
+  rw [hab]
+  use 2 * b
+  constructor
+  unfold Even
+  use b
+  ring
+  simp [f]
+
 
 def IsLinear (f : ℚ → ℚ) : Prop := ∃ c, ∀ x, f x = c * x
 
 /-- Задача 3. -/
 example : {f : ℚ → ℚ | IsLinear f ∧ ∀ x, |f x| = |x|} = {id, -id} := by
-  sorry
+  unfold IsLinear
+  ext x
+  constructor
+  intro h
+  
