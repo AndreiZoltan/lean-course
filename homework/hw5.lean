@@ -9,7 +9,12 @@ import Mathlib
 
 /-- Задача 1: Любая группа в которой верно `x^2=1` для всех `x`, абелева. -/
 example {G : Type} [Group G] (h : ∀ g : G, g * g = 1) : ∀ g h : G, g * h = h * g := by
-  sorry
+  have inv_eq_self : ∀ g : G, g = g⁻¹ := by
+    intro g
+    rw [←mul_right_inj g⁻¹, h g⁻¹]
+    exact inv_mul_cancel g
+  intro g h
+  rw [inv_eq_self (g * h), mul_inv_rev, ← inv_eq_self g, ← inv_eq_self h]
 
 /- Задача 2:
 Покажите, что множество кватернионных единиц `Q₈ = {±1, ±i, ±j, ±k}`, которые перемножаются так,
@@ -27,19 +32,71 @@ inductive Q8_Generator where
 -- Второй множитель отвечает за знак. `true` значит "минус".
 def Q8 : Type := Q8_Generator × Bool
 
+namespace Q8
+open Q8_Generator
+
+def genMul : Q8_Generator → Q8_Generator → Q8_Generator × Bool
+| e, g => (g, false)
+| g, e => (g, false)
+| i, i => (e, true)
+| j, j => (e, true)
+| k, k => (e, true)
+| i, j => (k, false)
+| j, k => (i, false)
+| k, i => (j, false)
+| j, i => (k, true)
+| k, j => (i, true)
+| i, k => (j, true)
+
+def genInv : Q8_Generator → Q8_Generator × Bool
+| e => (e, false)
+| i => (i, true)
+| j => (j, true)
+| k => (k, true)
+
 -- Указание: в определении `mul` нужно сделать `match (x, b1), (y, b2) with ...` и разобрать 16 случаев.
 -- Булы можно складывать, сложение определено как xor.
 -- После этого требуемые свойства должны доказываться разбором всех случаев
 -- как-то так: `cases x <;> cases b1 <;> cases y <;> cases b2 <;> rfl`
 instance : Group Q8 where
-  one := sorry
-  mul := sorry
-  inv := sorry
-  mul_assoc := sorry
-  one_mul := sorry
-  mul_one := sorry
-  inv_mul_cancel := sorry
-
+  one := (Q8_Generator.e, false)
+  mul := fun p q =>
+    match p, q with
+    | (g₁, s₁), (g₂, s₂) =>
+      let (g, s₀) := genMul g₁ g₂
+      (g, (s₁ + s₂) + s₀)
+  inv := fun p =>
+    match p with
+    | (g, s) =>
+      let (g', s₀) := genInv g
+      (g', s + s₀)
+  mul_assoc := by
+    intro a b c
+    cases a with
+    | mk ga sa =>
+      cases b with
+      | mk gb sb =>
+        cases c with
+        | mk gc sc =>
+          cases ga <;> cases sa <;>
+          cases gb <;> cases sb <;>
+          cases gc <;> cases sc <;> rfl
+  one_mul := by
+    intro a
+    cases a with
+    | mk g s =>
+      cases g <;> cases s <;> rfl
+  mul_one := by
+    intro a
+    cases a with
+    | mk g s =>
+      cases g <;> cases s <;> rfl
+  inv_mul_cancel := by
+    intro a
+    cases a with
+    | mk g s =>
+      cases g <;> cases s <;> rfl
+end Q8
 end Problem2
 
 open Problem2 in
